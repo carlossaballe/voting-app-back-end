@@ -1,2 +1,2 @@
 # voting-app-back-end
-Backend: Node.js - Express - GraphQL - Typescript
+Voting App - GraphQL, Typescript, Express
