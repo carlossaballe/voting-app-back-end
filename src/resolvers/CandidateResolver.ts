@@ -1,20 +1,66 @@
-import { Resolver, Query, Mutation, Arg } from 'type-graphql';
+import { Resolver, Query, Mutation, Arg, Field, InputType, Int } from 'type-graphql';
 import { Candidate } from '../entity/Candidate';
+
+@InputType()
+class CandidateInfo {
+    @Field()
+    firstname!: string
+
+    @Field()
+    lastname!: string
+    
+    @Field()
+    age!: number
+    
+    @Field()
+    slogan!: string
+    
+    @Field()
+    votes!: number
+}
+
+@InputType()
+class UpdateCandidateInfo {
+    @Field(() => String, {nullable: true})
+    firstname?: string
+
+    @Field(() => String, {nullable: true})
+    lastname?: string
+    
+    @Field(() => Int, {nullable: true})
+    age?: number
+    
+    @Field(() => String, {nullable: true})
+    slogan?: string
+    
+    @Field(() => Int, {nullable: true})
+    votes?: number
+}
 
 @Resolver()
 export class CandidateResolver {
 
-    @Mutation(() => Boolean)
-    async createCandidate(
-        @Arg('firstname') firstname: string,
-        @Arg('lastname') lastname: string,
-        @Arg('age') age: number,
-        @Arg('slogan') slogan: string,
-        @Arg('votes') votes: number,
-    )
+    @Mutation(() => Candidate)
+    async createCandidate( 
+        @Arg('info', () => CandidateInfo) info: CandidateInfo
+    ) 
     {
-        Candidate.insert({firstname, lastname, age, slogan, votes})
-        console.log(firstname, lastname, age, slogan, votes);
+        const newCandidate = Candidate.create(info);
+        console.log(newCandidate);
+        return await newCandidate.save(); 
+    }
+
+    @Mutation(() => Boolean)
+    async updateVotes(
+        @Arg('id', () => Int) id: number,
+        @Arg('data', () => UpdateCandidateInfo) data: UpdateCandidateInfo,
+    ) {
+        await Candidate.update({ id }, data );
         return true;
+    }
+
+    @Query(() => [Candidate])
+    getCandidates() {
+        return Candidate.find()
     }
 }
