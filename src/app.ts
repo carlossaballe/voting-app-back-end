@@ -3,9 +3,11 @@ import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { PingResolver } from './resolvers/ping';
 import { CandidateResolver } from './resolvers/CandidateResolver';
+//import cors from 'cors'
 
 export async function startServer() {
     const app = express();
+    //app.use(cors());
 
     const server = new ApolloServer({
         schema: await buildSchema({
