@@ -50,13 +50,14 @@ export class CandidateResolver {
         return await newCandidate.save(); 
     }
 
-    @Mutation(() => Boolean)
+    @Mutation(() => Candidate)
     async updateVotes(
         @Arg('id', () => Int) id: number,
         @Arg('data', () => UpdateCandidateInfo) data: UpdateCandidateInfo,
     ) {
         await Candidate.update({ id }, data );
-        return true;
+        
+        return await Candidate.findOne({id});
     }
 
     @Query(() => [Candidate])
